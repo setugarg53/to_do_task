@@ -52,7 +52,7 @@ public class TaskDAO implements TaskInterface
 		boolean result=false;
 		
 		try {
-			
+			//to check if the iven task is present or not
 			TaskBean task = this.getTaskById(taskID);
 			con=ConnectionManager.getConnection();
 			if(task!=null)
