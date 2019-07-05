@@ -44,4 +44,13 @@ public class TaskController {
 		TaskBean task = getAllTask.getTaskById(taskId);
 		return task;
 	}
+	@GET
+	@Path("/delete/{deleteTaskId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String deleteTaskById(@PathParam("deleteTaskId") int deletTaskId)
+	{
+		TaskService getAllTask = new TaskService();
+		String result = getAllTask.deleteTask(deletTaskId);
+		return result;
+	}
 }

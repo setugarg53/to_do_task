@@ -75,6 +75,24 @@ public TaskBean getTaskById(int taskID)
 	
 	return task;
 	
-}
+	}
+
+	public String deleteTask(int taskId)
+	{
+		String result="Task is not Deleted";
+		TaskInterface dao = new TaskDAO();
+		try {
+			if(dao.deleteTask(taskId))
+			{
+			result="Task is successfully deleted";	
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result;
+		
+	}
 
 }

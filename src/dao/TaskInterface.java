@@ -12,7 +12,7 @@ public interface TaskInterface
 {
 public boolean addTask(TaskBean task) throws SQLException;
 public List<TaskBean> getAllTasks() throws SQLException,TaskNotFound;
-public boolean deleteTask(int taskID);
+public boolean deleteTask(int taskID) throws SQLException;
 public boolean editTask(TaskBean task);
 public List<TaskBean> getTaskByPriority(String priority);
 public List<TaskBean> getTaskByCompletionDate(Date compDt);

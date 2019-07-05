@@ -48,9 +48,34 @@ public class TaskDAO implements TaskInterface
 	}
 
 	@Override
-	public boolean deleteTask(int taskID) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean deleteTask(int taskID) throws SQLException{
+		boolean result=false;
+		
+		try {
+			
+			TaskBean task = this.getTaskById(taskID);
+			con=ConnectionManager.getConnection();
+			if(task!=null)
+			{
+				if(con!=null)
+				{
+					ps=con.prepareStatement("delete from to_do_list where task_id="+taskID);
+
+		            int i=ps.executeUpdate();
+		            if(i>0)
+		            {
+		            	result = true;
+		            }
+		        	
+		    	}
+			}
+		} catch (TaskNotFound e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		con.close();
+		ps.close();
+		return result;
 	}
 
 	@Override
@@ -77,9 +102,11 @@ public class TaskDAO implements TaskInterface
 		con=ConnectionManager.getConnection();
 		if(con!=null)
 		{
+			
 			ps=con.prepareStatement("select * from to_do_list where task_id="+taskID);
 
             rs=ps.executeQuery();
+            
             if(rs.next())
             {
             	
@@ -89,8 +116,7 @@ public class TaskDAO implements TaskInterface
                 task.setPriority(rs.getString(4));
                 task.setTaskDueDate(rs.getDate(5));
                 task.setTaskCreationDate(rs.getDate(6));
-                task.setCompleted(rs.getBoolean(7));
-                                   
+                task.setCompleted(rs.getBoolean(7));               
 		}
             else
             {
