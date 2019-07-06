@@ -80,9 +80,43 @@ public class TaskDAO implements TaskInterface
 
 	@Override
 	public boolean editTask(TaskBean task) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		boolean result = false;
+		try {
+			//to check if the iven task is present or not
+			TaskBean taskTemp = this.getTaskById(task.getTaskID());
+			con=ConnectionManager.getConnection();
+			if(task!=null)
+			{
+				if(con!=null)
+				{
+					ps=con.prepareStatement("update to_do_list SET task_title = ? ,task_description = ?,task_priority = ?,task_due_date = ?,task_creation_date = ?,task_isCompleted = ? where task_id = ?");
+					ps.setString(1,task.getTaskTitle());
+					ps.setString(2,task.getTaskDesc());
+					ps.setString(3,task.getPriority());
+					ps.setDate(4,task.getTaskDueDate());
+					ps.setDate(5,task.getTaskCreationDate());
+					ps.setBoolean(6,task.isCompleted());
+					ps.setInt(7,task.getTaskID());	
+		            int i=ps.executeUpdate();
+		            if(i>0)
+		            {
+		            	result = true;
+		            }
+		        	
+		    	}
+			}
+			con.close();
+			ps.close();
+		} catch (TaskNotFound e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result;
+		}
 
 	@Override
 	public List<TaskBean> getTaskByPriority(String priority) {

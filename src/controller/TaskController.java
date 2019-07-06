@@ -23,6 +23,13 @@ public class TaskController {
 		TaskService taskSrc = new TaskService();
 		return taskSrc.addTask(a1);
 	}
+	@POST
+	@Path("/edit")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public String editTask(TaskBean a1) {
+		TaskService taskSrc = new TaskService();
+		return taskSrc.editTask(a1);
+	}
 	
 	@GET
 	@Path("/view")

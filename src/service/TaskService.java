@@ -94,5 +94,17 @@ public TaskBean getTaskById(int taskID)
 		return result;
 		
 	}
+	
+	public String editTask(TaskBean task)
+	{
+		String result = "Task Not Edited";
+		TaskInterface editTask = new TaskDAO();
+		if(editTask.editTask(task))
+		{
+			result = "Task Sucessfully edited";
+		}	
+		return result;
+		
+	}
 
 }
