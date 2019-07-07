@@ -26,11 +26,15 @@ public class TaskDAO implements TaskInterface
 		con=ConnectionManager.getConnection();
 		if(con!=null)
 		{
+			/*
+			 * task_is is auto incremented
+			 * and is_Completed is considered as false by default
+			 */
 			PreparedStatement stmt=con.prepareStatement("insert into to_do_list values(default,?,?,?,?,?,false)",Statement.RETURN_GENERATED_KEYS);
 			
 			stmt.setString(1,task.getTaskTitle());
 			stmt.setString(2,task.getTaskDesc());
-			stmt.setString(3,task.getPriority());
+			stmt.setString(3,task.getPriority().toLowerCase());
 			stmt.setDate(4,task.getTaskDueDate());
 			stmt.setDate(5,task.getTaskCreationDate());
 			int i=stmt.executeUpdate();  
@@ -52,7 +56,7 @@ public class TaskDAO implements TaskInterface
 		boolean result=false;
 		
 		try {
-			//to check if the iven task is present or not
+			//to check if the given task is present or not
 			TaskBean task = this.getTaskById(taskID);
 			con=ConnectionManager.getConnection();
 			if(task!=null)
@@ -82,7 +86,7 @@ public class TaskDAO implements TaskInterface
 	public boolean editTask(TaskBean task) {
 		boolean result = false;
 		try {
-			//to check if the iven task is present or not
+			//to check if the given task is present or not
 			TaskBean taskTemp = this.getTaskById(task.getTaskID());
 			con=ConnectionManager.getConnection();
 			if(task!=null)
@@ -92,7 +96,7 @@ public class TaskDAO implements TaskInterface
 					ps=con.prepareStatement("update to_do_list SET task_title = ? ,task_description = ?,task_priority = ?,task_due_date = ?,task_creation_date = ?,task_isCompleted = ? where task_id = ?");
 					ps.setString(1,task.getTaskTitle());
 					ps.setString(2,task.getTaskDesc());
-					ps.setString(3,task.getPriority());
+					ps.setString(3,task.getPriority().toLowerCase());
 					ps.setDate(4,task.getTaskDueDate());
 					ps.setDate(5,task.getTaskCreationDate());
 					ps.setBoolean(6,task.isCompleted());
@@ -119,15 +123,45 @@ public class TaskDAO implements TaskInterface
 		}
 
 	@Override
-	public List<TaskBean> getTaskByPriority(String priority) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<TaskBean> getTaskByCompletionDate(Date compDt) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<TaskBean> getTaskByPriority(String priority) throws SQLException,TaskNotFound
+	{
+		List<TaskBean> listTask = new ArrayList<TaskBean>();
+		con=ConnectionManager.getConnection();
+		String pr= priority;
+		pr.toLowerCase();
+		TaskBean task;
+		if(con!=null)
+		{
+			ps=con.prepareStatement("select * from to_do_list where task_priority = ?");
+			ps.setString(1,pr);
+            rs=ps.executeQuery();
+            if(rs.next())
+            {
+            do
+            {
+                task=new TaskBean();
+                task.setTaskID(rs.getInt(1));
+                task.setTaskTitle(rs.getString(2));
+                task.setTaskDesc(rs.getString(3));
+                task.setPriority(rs.getString(4));
+                task.setTaskDueDate(rs.getDate(5));
+                task.setTaskCreationDate(rs.getDate(6));
+                task.setCompleted(rs.getBoolean(7));
+                listTask.add(task);
+            }
+            while(rs.next());
+            
+		}
+            else
+            {
+            	throw new TaskNotFound("No Task Present");
+            }
+		}
+		con.close();
+		ps.close();
+		rs.close();
+		return listTask;
+		
 	}
 
 	@Override
@@ -136,7 +170,7 @@ public class TaskDAO implements TaskInterface
 		con=ConnectionManager.getConnection();
 		if(con!=null)
 		{
-			
+			//taskId given is not present
 			ps=con.prepareStatement("select * from to_do_list where task_id="+taskID);
 
             rs=ps.executeQuery();
@@ -165,21 +199,40 @@ public class TaskDAO implements TaskInterface
 		}
 
 	@Override
-	public List<TaskBean> taskStatus(Boolean b) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<TaskBean> sortTaskToPriority() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<TaskBean> sortTaskToCompletionDate() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<TaskBean> sortTaskToCompletionDate() throws SQLException,TaskNotFound {
+		List<TaskBean> listTask = new ArrayList<TaskBean>();
+		con=ConnectionManager.getConnection();
+		TaskBean task;
+		if(con!=null)
+		{
+			ps=con.prepareStatement("select * from to_do_list ORDER BY task_due_date");
+			rs=ps.executeQuery();
+            if(rs.next())
+            {
+            do
+            {
+                task=new TaskBean();
+                task.setTaskID(rs.getInt(1));
+                task.setTaskTitle(rs.getString(2));
+                task.setTaskDesc(rs.getString(3));
+                task.setPriority(rs.getString(4));
+                task.setTaskDueDate(rs.getDate(5));
+                task.setTaskCreationDate(rs.getDate(6));
+                task.setCompleted(rs.getBoolean(7));
+                listTask.add(task);
+            }
+            while(rs.next());
+            
+		}
+            else
+            {
+            	throw new TaskNotFound("No Task Present");
+            }
+		}
+		con.close();
+		ps.close();
+		rs.close();
+		return listTask;
 	}
 
 	@Override

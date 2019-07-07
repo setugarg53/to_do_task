@@ -15,14 +15,22 @@ import service.TaskService;
 
 @Path("/task")
 public class TaskController {
-
+	
+	/*
+	 * http://localhost:8080/assignmnet/rest/task/add
+	 * Pass all the parameter in json or xml except TaskID as it is auto incremented
+	 */
 	@POST
 	@Path("/add")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public String addTask(TaskBean a1) {
+		public String addTask(TaskBean a1) {
 		TaskService taskSrc = new TaskService();
 		return taskSrc.addTask(a1);
 	}
+	/*
+	 * http://localhost:8080/assignmnet/rest/task/edit
+	 * Pass all the parameters as in bean class in json or xml
+	 */
 	@POST
 	@Path("/edit")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -31,6 +39,10 @@ public class TaskController {
 		return taskSrc.editTask(a1);
 	}
 	
+	/*
+	 * http://localhost:8080/assignmnet/rest/task/view
+	 * Gives all the task as preset in database in in json format
+	 */
 	@GET
 	@Path("/view")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -38,10 +50,27 @@ public class TaskController {
 	{
 		TaskService getAllTask = new TaskService();
 		List<TaskBean> allTasks = getAllTask.getAllTask();
+		return allTasks;
+	}
+	/*
+	 * http://localhost:8080/assignmnet/rest/task/view/priority/{priority}
+	 * it will give all the task as per priority given in url and in task while creation of task
+	 */
+	@GET
+	@Path("/view/priority/{priority}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<TaskBean> taskByPriority(@PathParam("priority") String priority)
+	{
+		TaskService getAllTask = new TaskService();
+		List<TaskBean> allTasks = getAllTask.getTaskByPriority(priority);
 		//System.out.println(allTasks.get(0).getTaskCreationDate());
 		return allTasks;
 	}
-	
+	/*
+	 * http://localhost:8080/assignmnet/rest/task/view/{taskid}
+	 * to view a particular task as per task id
+	 * 
+	 */
 	@GET
 	@Path("/view/{taskId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -51,6 +80,23 @@ public class TaskController {
 		TaskBean task = getAllTask.getTaskById(taskId);
 		return task;
 	}
+	/*
+	 * http://localhost:8080/assignmnet/rest/task/view/cdate
+	 * to view all the tasks sorted by completion date
+	 */
+	@GET
+	@Path("/view/cdate")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<TaskBean> sortByCompletionDate()
+	{
+		TaskService getAllTask = new TaskService();
+		List<TaskBean> allTasks = getAllTask.getTaskByCompletionDate();
+		return allTasks;
+	}
+	/*
+	 * http://localhost:8080/assignmnet/rest/task/delete/503
+	 * to delete a particular task as per task id
+	 */
 	@GET
 	@Path("/delete/{deleteTaskId}")
 	@Produces(MediaType.APPLICATION_JSON)

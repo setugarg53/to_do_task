@@ -14,10 +14,7 @@ public boolean addTask(TaskBean task) throws SQLException;
 public List<TaskBean> getAllTasks() throws SQLException,TaskNotFound;
 public boolean deleteTask(int taskID) throws SQLException;
 public boolean editTask(TaskBean task);
-public List<TaskBean> getTaskByPriority(String priority);
-public List<TaskBean> getTaskByCompletionDate(Date compDt);
+public List<TaskBean> getTaskByPriority(String priority) throws SQLException, TaskNotFound;
 public TaskBean getTaskById(int taskID) throws SQLException,TaskNotFound;
-public List<TaskBean> taskStatus(Boolean b);
-public List<TaskBean> sortTaskToPriority();
-public List<TaskBean> sortTaskToCompletionDate();
+public List<TaskBean> sortTaskToCompletionDate() throws SQLException, TaskNotFound;
 }

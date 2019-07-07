@@ -106,5 +106,34 @@ public TaskBean getTaskById(int taskID)
 		return result;
 		
 	}
+	
+	public List<TaskBean> getTaskByPriority(String priority)
+	{
+		TaskInterface getTaskByPriority = new TaskDAO();
+		List<TaskBean> allTasks=null;
+		try {
+			allTasks = getTaskByPriority.getTaskByPriority(priority);
+			} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TaskNotFound e) {
+				e.printStackTrace();
+			}
+		return allTasks;
+	}
+	public List<TaskBean> getTaskByCompletionDate()
+	{
+		TaskInterface getTaskByPriority = new TaskDAO();
+		List<TaskBean> allTasks=null;
+		try {
+			allTasks = getTaskByPriority.sortTaskToCompletionDate();
+			} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TaskNotFound e) {
+				e.printStackTrace();
+			}
+		return allTasks;
+	}
 
 }
